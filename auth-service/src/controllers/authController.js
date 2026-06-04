@@ -1,10 +1,11 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const axios = require("axios");
 
 const register = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role, managerId } = req.body;
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -13,6 +14,11 @@ const register = async (req, res) => {
       email,
       password: hashedPassword,
       role,
+      managerId
+    });
+
+    await axios.post("http://localhost:3002/api/leave-balance/init", {
+      employeeId: user._id,
     });
 
     res.status(201).json({
@@ -42,10 +48,7 @@ const login = async (req, res) => {
     }
 
     // Compare password
-    const isMatch = await bcrypt.compare(
-      password,
-      user.password
-    );
+    const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       return res.status(401).json({
@@ -63,7 +66,7 @@ const login = async (req, res) => {
       process.env.JWT_SECRET,
       {
         expiresIn: process.env.JWT_EXPIRES_IN,
-      }
+      },
     );
 
     res.status(200).json({
@@ -78,7 +81,6 @@ const login = async (req, res) => {
   }
 };
 
-
 const profile = async (req, res) => {
   res.json({
     success: true,
@@ -89,5 +91,5 @@ const profile = async (req, res) => {
 module.exports = {
   register,
   login,
-  profile
+  profile,
 };
