@@ -19,6 +19,12 @@ app.get("/", (req, res) => {
   res.send("Leave Service Running");
 });
 
+
+app.use((req, res, next) => {
+  console.log("LEAVE SERVICE HIT:", req.method, req.url);
+  next();
+});
+
 // Routes
 app.use("/api/leave", leaveBalanceRoutes);
 

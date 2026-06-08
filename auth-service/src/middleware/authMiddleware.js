@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 
 const authenticate = (req, res, next) => {
   try {
+    console.log(`authenticate: headers present=${!!req.headers.authorization}`);
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -22,6 +23,7 @@ const authenticate = (req, res, next) => {
 
     next();
   } catch (error) {
+    console.error('authenticate error:', error);
     return res.status(401).json({
       success: false,
       message: "Invalid token",

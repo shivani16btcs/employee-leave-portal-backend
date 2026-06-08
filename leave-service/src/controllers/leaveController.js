@@ -4,6 +4,7 @@ const Leave = require("../models/Leave");
 const initializeLeaveBalance = async (req, res) => {
   try {
     const { employeeId } = req.body;
+    console.log(`initializeLeaveBalance: employeeId=${employeeId}`);
 
     const existing = await LeaveBalance.findOne({
       employeeId,
@@ -24,6 +25,7 @@ const initializeLeaveBalance = async (req, res) => {
 
     res.status(201).json(leaveBalance);
   } catch (error) {
+    console.error('initializeLeaveBalance error:', error);
     res.status(500).json({
       message: error.message,
     });
@@ -32,6 +34,7 @@ const initializeLeaveBalance = async (req, res) => {
 
 const getLeaveBalance = async (req, res) => {
   try {
+    console.log(`getLeaveBalance: userId=${req.user && req.user.userId}`);
     const balance = await LeaveBalance.findOne({
       employeeId: req.user.userId,
     });
@@ -44,6 +47,7 @@ const getLeaveBalance = async (req, res) => {
 
     res.status(200).json(balance);
   } catch (error) {
+    console.error('getLeaveBalance error:', error);
     res.status(500).json({
       message: error.message,
     });
@@ -53,6 +57,7 @@ const getLeaveBalance = async (req, res) => {
 const applyLeave = async (req, res) => {
   try {
     const { startDate, endDate, leaveType, numberOfDays } = req.body;
+    console.log(`applyLeave: userId=${req.user && req.user.userId}, leaveType=${leaveType}, start=${startDate}, end=${endDate}, days=${numberOfDays}`);
     const leaveBalance = await LeaveBalance.findOne({
       employeeId: req.user.userId,
     });
@@ -116,6 +121,7 @@ const applyLeave = async (req, res) => {
 
     res.status(201).json(leave);
   } catch (error) {
+    console.error('applyLeave error:', error);
     res.status(500).json({
       message: error.message,
     });
@@ -124,6 +130,7 @@ const applyLeave = async (req, res) => {
 
 const getPendingLeaves = async (req, res) => {
   try {
+    console.log(`getPendingLeaves: userId=${req.user && req.user.userId}, role=${req.user && req.user.role}`);
     if (req.user.role !== "MANAGER") {
       return res.status(403).json({
         message: "Access denied",
@@ -137,6 +144,7 @@ const getPendingLeaves = async (req, res) => {
 
     res.status(200).json(leaves);
   } catch (error) {
+    console.error('getPendingLeaves error:', error);
     res.status(500).json({
       message: error.message,
     });
@@ -145,6 +153,7 @@ const getPendingLeaves = async (req, res) => {
 
 const approveLeave = async (req, res) => {
   try {
+    console.log(`approveLeave: userId=${req.user && req.user.userId}, role=${req.user && req.user.role}, leaveId=${req.params.id}`);
     if (req.user.role !== "MANAGER") {
       return res.status(403).json({
         message: "Access denied",
@@ -153,17 +162,35 @@ const approveLeave = async (req, res) => {
 
     const leave = await Leave.findById(req.params.id);
 
+    if (!leave) {
+      return res.status(404).json({
+        message: "Leave request not found",
+    });
+    }
+
+    const leaveBalance = await LeaveBalance.findOne({
+      employeeId: leave.employeeId,
+    });
+
     if (!leaveBalance) {
       return res.status(404).json({
         message: "Leave balance not found",
       });
     }
 
-    if (!leave) {
-      return res.status(404).json({
-        message: "Leave request not found",
-      });
+    if (leave.leaveType === "CASUAL") {
+      leaveBalance.casualLeave -= leave.numberOfDays;
     }
+
+    if (leave.leaveType === "SICK") {
+      leaveBalance.sickLeave -= leave.numberOfDays;
+    }
+
+    if (leave.leaveType === "PRIVILEGE") {
+      leaveBalance.privilegeLeave -= leave.numberOfDays;
+    }
+
+    await leaveBalance.save();
 
     leave.status = "APPROVED";
 
@@ -174,6 +201,7 @@ const approveLeave = async (req, res) => {
       leave,
     });
   } catch (error) {
+    console.error('approveLeave error:', error);
     res.status(500).json({
       message: error.message,
     });
@@ -182,6 +210,7 @@ const approveLeave = async (req, res) => {
 
 const rejectLeave = async (req, res) => {
   try {
+    console.log(`rejectLeave: userId=${req.user && req.user.userId}, role=${req.user && req.user.role}, leaveId=${req.params.id}`);
     if (req.user.role !== "MANAGER") {
       return res.status(403).json({
         message: "Access denied",
@@ -204,7 +233,7 @@ const rejectLeave = async (req, res) => {
     await leave.save();
 
     console.log(
-      `Notification: Leave rejected for employee ${leave.employeeId}`
+      `Notification: Leave rejected for employee ${leave.employeeId}`,
     );
 
     res.status(200).json({
@@ -212,15 +241,16 @@ const rejectLeave = async (req, res) => {
       leave,
     });
   } catch (error) {
+    console.error('rejectLeave error:', error);
     res.status(500).json({
       message: error.message,
     });
   }
 };
 
-
 const getLeaveHistory = async (req, res) => {
   try {
+    console.log(`getLeaveHistory: userId=${req.user && req.user.userId}, query=${JSON.stringify(req.query)}`);
     const { status, page = 1, limit = 10 } = req.query;
 
     const query = {
@@ -245,6 +275,7 @@ const getLeaveHistory = async (req, res) => {
       data: leaves,
     });
   } catch (error) {
+    console.error('getLeaveHistory error:', error);
     res.status(500).json({
       message: error.message,
     });
@@ -258,5 +289,5 @@ module.exports = {
   getPendingLeaves,
   approveLeave,
   rejectLeave,
-  getLeaveHistory
+  getLeaveHistory,
 };

@@ -6,6 +6,7 @@ const axios = require("axios");
 const register = async (req, res) => {
   try {
     const { name, email, password, role, managerId } = req.body;
+    console.log(`register: email=${email}, role=${role}`);
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -26,6 +27,7 @@ const register = async (req, res) => {
       data: user,
     });
   } catch (error) {
+    console.error('register error:', error);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -36,6 +38,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log(`login attempt: email=${email}`);
 
     // Find user
     const user = await User.findOne({ email });
@@ -74,6 +77,7 @@ const login = async (req, res) => {
       token,
     });
   } catch (error) {
+    console.error('login error:', error);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -82,6 +86,7 @@ const login = async (req, res) => {
 };
 
 const profile = async (req, res) => {
+  console.log(`profile: userId=${req.user && req.user.userId}`);
   res.json({
     success: true,
     user: req.user,
