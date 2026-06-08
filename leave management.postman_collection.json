@@ -1,0 +1,351 @@
+{
+  "info": {
+    "_postman_id": "f5852aca-e5b4-4238-a961-dd0dff0440f7",
+    "name": "leave management",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "28345680"
+  },
+  "item": [
+    {
+      "name": "authService",
+      "item": [
+        {
+          "name": "profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTIwMzIxZWYyMmY5NzIxNDY4Mjg4ZWMiLCJyb2xlIjoiTUFOQUdFUiIsImlhdCI6MTc4MDUxMjQ3NiwiZXhwIjoxNzgwNTk4ODc2fQ.tT3tr1qwXhnO8g0aPfoPiOr2PadFX8vWVH4URlAoj6I",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3001/api/auth/profile",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "api",
+                "auth",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "login",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"manager1@test.com\",\r\n  \"password\": \"password123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3001/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "leaveService",
+      "item": [
+        {
+          "name": "checkLeaveBalance",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTIxMjU4NmI5MzA1OGRmMmQyOGRkNTUiLCJyb2xlIjoiTUFOQUdFUiIsImlhdCI6MTc4MDU1Nzc1MCwiZXhwIjoxNzgwNjQ0MTUwfQ.0-jcvKDNirHbkd42jRi0VEU7TfAhWtMvwCIcvSQi9Xw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/leave",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3002",
+              "path": [
+                "api",
+                "leave"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "pending Leave",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTIxMjU4NmI5MzA1OGRmMmQyOGRkNTUiLCJyb2xlIjoiTUFOQUdFUiIsImlhdCI6MTc4MDU2MzA0NywiZXhwIjoxNzgwNjQ5NDQ3fQ.lEZfG6DaDIZl9gHTnNvzQj3yqxUjpncKzLppq5JOB_4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/leave/pending",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3002",
+              "path": [
+                "api",
+                "leave",
+                "pending"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "applyLeave",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTIxMjU4NmI5MzA1OGRmMmQyOGRkNTUiLCJyb2xlIjoiTUFOQUdFUiIsImlhdCI6MTc4MDU1OTI2OSwiZXhwIjoxNzgwNjQ1NjY5fQ.fNJaWed3snynys7VFydDGROnR-csiKW3kLMZNY6j8CM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"leaveType\": \"PRIVILEGE\",\r\n  \"startDate\": \"2026-06-17\",\r\n  \"endDate\": \"2026-06-17\",\r\n  \"numberOfDays\": 1,\r\n  \"reason\": \"Fever\",\r\n  \"managerId\": \"6a212586b93058df2d28dd55\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3002/api/leave/apply",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3002",
+              "path": [
+                "api",
+                "leave",
+                "apply"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "leave Approve",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTIxMjU4NmI5MzA1OGRmMmQyOGRkNTUiLCJyb2xlIjoiTUFOQUdFUiIsImlhdCI6MTc4MDU1OTI2OSwiZXhwIjoxNzgwNjQ1NjY5fQ.fNJaWed3snynys7VFydDGROnR-csiKW3kLMZNY6j8CM",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"leaveType\": \"PRIVILEGE\",\r\n  \"startDate\": \"2026-06-13\",\r\n  \"endDate\": \"2026-06-15\",\r\n  \"numberOfDays\": 3,\r\n  \"reason\": \"Fever\",\r\n  \"managerId\": \"6a212586b93058df2d28dd55\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3002/api/leave/6a215dac1714680a9fe9efd9/approve",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3002",
+              "path": [
+                "api",
+                "leave",
+                "6a215dac1714680a9fe9efd9",
+                "approve"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "reject Leave",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTIxMjU4NmI5MzA1OGRmMmQyOGRkNTUiLCJyb2xlIjoiTUFOQUdFUiIsImlhdCI6MTc4MDU2MzA0NywiZXhwIjoxNzgwNjQ5NDQ3fQ.lEZfG6DaDIZl9gHTnNvzQj3yqxUjpncKzLppq5JOB_4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"rejectionReason\": \"Project deadline\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3002/api/leave/6a215df41714680a9fe9efda/reject",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3002",
+              "path": [
+                "api",
+                "leave",
+                "6a215df41714680a9fe9efda",
+                "reject"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get all my Leave",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTIxMjU4NmI5MzA1OGRmMmQyOGRkNTUiLCJyb2xlIjoiTUFOQUdFUiIsImlhdCI6MTc4MDU2MzA0NywiZXhwIjoxNzgwNjQ5NDQ3fQ.lEZfG6DaDIZl9gHTnNvzQj3yqxUjpncKzLppq5JOB_4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:3002/api/leave/history?status=APPROVED&page=1&limit=1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3002",
+              "path": [
+                "api",
+                "leave",
+                "history"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "APPROVED"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "register user",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"employee One\",\r\n  \"email\": \"employee5@test.com\",\r\n  \"password\": \"password123\",\r\n  \"role\": \"EMPLOYEE\",\r\n  \"managerId\": \"6a212586b93058df2d28dd55\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3001/api/auth/register",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "api",
+            "auth",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
