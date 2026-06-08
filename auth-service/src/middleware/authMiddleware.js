@@ -6,6 +6,7 @@ const authenticate = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      console.log('authenticate failed: token missing or malformed');
       return res.status(401).json({
         success: false,
         message: "Token missing",

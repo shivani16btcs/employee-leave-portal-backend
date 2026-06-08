@@ -22,6 +22,9 @@ app.get("/", (req, res) => {
 
 app.use((req, res, next) => {
   console.log("LEAVE SERVICE HIT:", req.method, req.url);
+  res.on('finish', () => {
+    console.log(`LEAVE SERVICE RESPONSE: ${req.method} ${req.url} -> ${res.statusCode}`);
+  });
   next();
 });
 

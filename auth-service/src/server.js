@@ -6,6 +6,15 @@ const app = express();
 
 app.use(express.json());
 
+// Request/response logging
+app.use((req, res, next) => {
+  console.log("AUTH SERVICE HIT:", req.method, req.url);
+  res.on('finish', () => {
+    console.log(`AUTH SERVICE RESPONSE: ${req.method} ${req.url} -> ${res.statusCode}`);
+  });
+  next();
+});
+
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/auth", authRoutes);
 

@@ -18,7 +18,8 @@ const register = async (req, res) => {
       managerId
     });
 
-    await axios.post("http://localhost:3002/api/leave-balance/init", {
+    console.log(`calling leave-service init for userId=${user._id}`);
+    await axios.post("http://localhost:3002/api/leave/init", {
       employeeId: user._id,
     });
 
@@ -26,6 +27,7 @@ const register = async (req, res) => {
       success: true,
       data: user,
     });
+    console.log(`register success: userId=${user._id}, email=${user.email}`);
   } catch (error) {
     console.error('register error:', error);
     res.status(500).json({
@@ -44,6 +46,7 @@ const login = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
+      console.log(`login failed: email=${email} user not found`);
       return res.status(401).json({
         success: false,
         message: "Invalid email or password",
@@ -54,6 +57,7 @@ const login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
+      console.log(`login failed: email=${email} password mismatch`);
       return res.status(401).json({
         success: false,
         message: "Invalid email or password",
@@ -76,6 +80,7 @@ const login = async (req, res) => {
       success: true,
       token,
     });
+    console.log(`login success: userId=${user._id}, email=${user.email}`);
   } catch (error) {
     console.error('login error:', error);
     res.status(500).json({
@@ -91,6 +96,7 @@ const profile = async (req, res) => {
     success: true,
     user: req.user,
   });
+  console.log(`profile returned: userId=${req.user && req.user.userId}`);
 };
 
 module.exports = {

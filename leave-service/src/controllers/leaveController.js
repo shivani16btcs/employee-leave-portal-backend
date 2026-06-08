@@ -11,6 +11,7 @@ const initializeLeaveBalance = async (req, res) => {
     });
 
     if (existing) {
+      console.log(`initializeLeaveBalance failed: employeeId=${employeeId} already exists`);
       return res.status(400).json({
         message: "Leave balance already exists",
       });
@@ -24,6 +25,7 @@ const initializeLeaveBalance = async (req, res) => {
     });
 
     res.status(201).json(leaveBalance);
+    console.log(`initializeLeaveBalance success: employeeId=${employeeId}, balanceId=${leaveBalance._id}`);
   } catch (error) {
     console.error('initializeLeaveBalance error:', error);
     res.status(500).json({
@@ -40,12 +42,14 @@ const getLeaveBalance = async (req, res) => {
     });
 
     if (!balance) {
+      console.log(`getLeaveBalance failed: userId=${req.user && req.user.userId} balance not found`);
       return res.status(404).json({
         message: "Leave balance not found",
       });
     }
 
     res.status(200).json(balance);
+    console.log(`getLeaveBalance success: userId=${req.user && req.user.userId}`);
   } catch (error) {
     console.error('getLeaveBalance error:', error);
     res.status(500).json({
@@ -66,12 +70,14 @@ const applyLeave = async (req, res) => {
     today.setHours(0, 0, 0, 0);
 
     if (new Date(startDate) < today) {
+      console.log(`applyLeave failed: userId=${req.user && req.user.userId} startDate ${startDate} is in the past`);
       return res.status(400).json({
         message: "Cannot apply leave for past dates",
       });
     }
 
     if (new Date(startDate) > new Date(endDate)) {
+      console.log(`applyLeave failed: userId=${req.user && req.user.userId} startDate ${startDate} after endDate ${endDate}`);
       return res.status(400).json({
         message: "Start date cannot be after end date",
       });
@@ -85,18 +91,21 @@ const applyLeave = async (req, res) => {
     });
 
     if (existingLeave) {
+      console.log(`applyLeave failed: userId=${req.user && req.user.userId} overlapping leave exists id=${existingLeave._id}`);
       return res.status(400).json({
         message: "Overlapping leave request exists",
       });
     }
 
     if (leaveType === "CASUAL" && leaveBalance.casualLeave < numberOfDays) {
+      console.log(`applyLeave failed: userId=${req.user && req.user.userId} insufficient casual leave: have=${leaveBalance.casualLeave} need=${numberOfDays}`);
       return res.status(400).json({
         message: "Insufficient casual leave balance",
       });
     }
 
     if (leaveType === "SICK" && leaveBalance.sickLeave < numberOfDays) {
+      console.log(`applyLeave failed: userId=${req.user && req.user.userId} insufficient sick leave: have=${leaveBalance.sickLeave} need=${numberOfDays}`);
       return res.status(400).json({
         message: "Insufficient sick leave balance",
       });
@@ -106,6 +115,7 @@ const applyLeave = async (req, res) => {
       leaveType === "PRIVILEGE" &&
       leaveBalance.privilegeLeave < numberOfDays
     ) {
+      console.log(`applyLeave failed: userId=${req.user && req.user.userId} insufficient privilege leave: have=${leaveBalance.privilegeLeave} need=${numberOfDays}`);
       return res.status(400).json({
         message: "Insufficient privilege leave balance",
       });
@@ -120,6 +130,7 @@ const applyLeave = async (req, res) => {
     console.log(`Notification: Leave applied by ${req.user.userId}`);
 
     res.status(201).json(leave);
+    console.log(`applyLeave success: userId=${req.user && req.user.userId} leaveId=${leave._id}`);
   } catch (error) {
     console.error('applyLeave error:', error);
     res.status(500).json({
@@ -132,6 +143,7 @@ const getPendingLeaves = async (req, res) => {
   try {
     console.log(`getPendingLeaves: userId=${req.user && req.user.userId}, role=${req.user && req.user.role}`);
     if (req.user.role !== "MANAGER") {
+      console.log(`getPendingLeaves failed: userId=${req.user && req.user.userId} role=${req.user && req.user.role} not manager`);
       return res.status(403).json({
         message: "Access denied",
       });
@@ -143,6 +155,7 @@ const getPendingLeaves = async (req, res) => {
     });
 
     res.status(200).json(leaves);
+    console.log(`getPendingLeaves success: managerId=${req.user && req.user.userId} returned=${leaves.length}`);
   } catch (error) {
     console.error('getPendingLeaves error:', error);
     res.status(500).json({
@@ -155,6 +168,7 @@ const approveLeave = async (req, res) => {
   try {
     console.log(`approveLeave: userId=${req.user && req.user.userId}, role=${req.user && req.user.role}, leaveId=${req.params.id}`);
     if (req.user.role !== "MANAGER") {
+      console.log(`approveLeave failed: userId=${req.user && req.user.userId} role=${req.user && req.user.role} not manager`);
       return res.status(403).json({
         message: "Access denied",
       });
@@ -163,6 +177,7 @@ const approveLeave = async (req, res) => {
     const leave = await Leave.findById(req.params.id);
 
     if (!leave) {
+      console.log(`approveLeave failed: leaveId=${req.params.id} not found`);
       return res.status(404).json({
         message: "Leave request not found",
     });
@@ -173,6 +188,7 @@ const approveLeave = async (req, res) => {
     });
 
     if (!leaveBalance) {
+      console.log(`approveLeave failed: leaveId=${leave._id} leaveBalance not found for employeeId=${leave.employeeId}`);
       return res.status(404).json({
         message: "Leave balance not found",
       });
@@ -200,6 +216,7 @@ const approveLeave = async (req, res) => {
       message: "Leave approved",
       leave,
     });
+    console.log(`approveLeave success: managerId=${req.user && req.user.userId} leaveId=${leave._id}`);
   } catch (error) {
     console.error('approveLeave error:', error);
     res.status(500).json({
@@ -212,6 +229,7 @@ const rejectLeave = async (req, res) => {
   try {
     console.log(`rejectLeave: userId=${req.user && req.user.userId}, role=${req.user && req.user.role}, leaveId=${req.params.id}`);
     if (req.user.role !== "MANAGER") {
+      console.log(`rejectLeave failed: userId=${req.user && req.user.userId} role=${req.user && req.user.role} not manager`);
       return res.status(403).json({
         message: "Access denied",
       });
@@ -222,6 +240,7 @@ const rejectLeave = async (req, res) => {
     const leave = await Leave.findById(req.params.id);
 
     if (!leave) {
+      console.log(`rejectLeave failed: leaveId=${req.params.id} not found`);
       return res.status(404).json({
         message: "Leave request not found",
       });
@@ -235,6 +254,8 @@ const rejectLeave = async (req, res) => {
     console.log(
       `Notification: Leave rejected for employee ${leave.employeeId}`,
     );
+
+    console.log(`rejectLeave success: managerId=${req.user && req.user.userId} leaveId=${leave._id}`);
 
     res.status(200).json({
       message: "Leave rejected",
@@ -274,6 +295,7 @@ const getLeaveHistory = async (req, res) => {
       limit: Number(limit),
       data: leaves,
     });
+    console.log(`getLeaveHistory success: userId=${req.user && req.user.userId} returned=${leaves.length}`);
   } catch (error) {
     console.error('getLeaveHistory error:', error);
     res.status(500).json({

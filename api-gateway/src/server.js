@@ -3,6 +3,15 @@ const { createProxyMiddleware } = require("http-proxy-middleware");
 
 const app = express();
 
+// Request/response logging middleware
+app.use((req, res, next) => {
+  console.log("API GATEWAY HIT:", req.method, req.url);
+  res.on('finish', () => {
+    console.log(`API GATEWAY RESPONSE: ${req.method} ${req.url} -> ${res.statusCode}`);
+  });
+  next();
+});
+
 app.use(
   "/api/auth",
   createProxyMiddleware({

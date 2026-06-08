@@ -1,2 +1,44 @@
-version: '3.9'
-services: {}
+
+services:
+  mongo:
+    image: mongo:6
+    restart: unless-stopped
+    volumes:
+      - ./data/db:/data/db
+    ports:
+      - "27017:27017"
+
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - MONGO_URI=mongodb://mongo:27017/leave-management
+      - JWT_SECRET=changeme
+      - JWT_EXPIRES_IN=1d
+    depends_on:
+      - mongo
+
+  leave-service:
+    build: ./leave-service
+    container_name: leave-service
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+      - MONGO_URI=mongodb://mongo:27017/leave-management
+    depends_on:
+      - mongo
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+    depends_on:
+      - auth-service
+      - leave-service
