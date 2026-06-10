@@ -14,11 +14,11 @@ const {
 } = require("../controllers/leaveController");
 
 router.post("/init", initializeLeaveBalance);
-router.post("/apply", authMiddleware, applyLeave);
 router.get("/pending", authMiddleware, getPendingLeaves);
 router.get("/history", authMiddleware, getLeaveHistory);
-router.get("/", authMiddleware, getLeaveBalance);
+router.post("/apply", authMiddleware, applyLeave);
 router.put("/:id/approve", authMiddleware, approveLeave);
 router.put("/:id/reject", authMiddleware, rejectLeave);
+router.get("/", authMiddleware, getLeaveBalance);
 
 module.exports = router;
