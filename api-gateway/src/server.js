@@ -1,13 +1,14 @@
-const express = require("express");
-const { createProxyMiddleware } = require("http-proxy-middleware");
+import express from "express";
+import { createProxyMiddleware } from "http-proxy-middleware";
 
 const app = express();
 
-// Request/response logging middleware
 app.use((req, res, next) => {
   console.log("API GATEWAY HIT:", req.method, req.url);
-  res.on('finish', () => {
-    console.log(`API GATEWAY RESPONSE: ${req.method} ${req.url} -> ${res.statusCode}`);
+  res.on("finish", () => {
+    console.log(
+      `API GATEWAY RESPONSE: ${req.method} ${req.url} -> ${res.statusCode}`
+    );
   });
   next();
 });
@@ -15,7 +16,7 @@ app.use((req, res, next) => {
 app.use(
   "/api/auth",
   createProxyMiddleware({
-    target: "http://localhost:3001",
+    target: "http://auth-service:3001",
     changeOrigin: true,
   })
 );
@@ -23,11 +24,8 @@ app.use(
 app.use(
   "/api/leave",
   createProxyMiddleware({
-    target: "http://localhost:3002",
+    target: "http://leave-service:3002",
     changeOrigin: true,
-    pathRewrite: (path, req) => {
-      return "/api/leave" + path;
-    },
   })
 );
 

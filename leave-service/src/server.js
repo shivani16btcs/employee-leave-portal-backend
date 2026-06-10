@@ -5,7 +5,11 @@ require("dotenv").config();
 const leaveBalanceRoutes = require("./routes/leaveBalanceRoutes");
 
 const app = express();
+const crypto = require("crypto");
 
+if (!global.crypto) {
+  global.crypto = crypto.webcrypto;
+} 
 app.use(express.json());
 
 // MongoDB Connection

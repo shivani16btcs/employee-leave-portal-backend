@@ -1,5 +1,10 @@
 # Employee Leave Portal Backend
 
+start docker : sudo service docker start
+cd /mnt/c/shivani/microservice_assignment/employee-leave-portal-backend
+docker compose up --build 
+
+
 A microservices-based employee leave management system with authentication, role-based authorization, and comprehensive leave request workflows.
 
 ## Features

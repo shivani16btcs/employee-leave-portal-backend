@@ -19,7 +19,7 @@ const register = async (req, res) => {
     });
 
     console.log(`calling leave-service init for userId=${user._id}`);
-    await axios.post("http://localhost:3002/api/leave/init", {
+    await axios.post("http://leave-service:3002/api/leave/init", {
       employeeId: user._id,
     });
 

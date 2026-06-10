@@ -4,8 +4,6 @@ services:
   mongo:
     image: mongo:6
     restart: unless-stopped
-    volumes:
-      - ./data/db:/data/db
     ports:
       - "27017:27017"
 
@@ -30,6 +28,7 @@ services:
     environment:
       - PORT=3002
       - MONGO_URI=mongodb://mongo:27017/leave-management
+      - JWT_SECRET=changeme
     depends_on:
       - mongo
 

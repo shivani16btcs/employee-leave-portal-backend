@@ -3,7 +3,11 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 const app = express();
+const crypto = require("crypto");
 
+if (!global.crypto) {
+  global.crypto = crypto.webcrypto;
+}
 app.use(express.json());
 
 // Request/response logging
