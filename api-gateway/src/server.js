@@ -18,6 +18,7 @@ app.use(
   createProxyMiddleware({
     target: "http://auth-service:3001",
     changeOrigin: true,
+    pathRewrite: (path) => "/api/auth" + path,
   })
 );
 
@@ -26,6 +27,7 @@ app.use(
   createProxyMiddleware({
     target: "http://leave-service:3002",
     changeOrigin: true,
+    pathRewrite: (path) => "/api/leave" + path,
   })
 );
 
